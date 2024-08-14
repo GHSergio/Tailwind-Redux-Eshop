@@ -1,35 +1,74 @@
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Badge,
+  Grid,
+} from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import Container from "@mui/material/Container";
-import { Box, Button } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NavLinks from "./NavLinks";
+import SearchBar from "./SearchBar";
 
-const Navbar: React.FC = () => {
+interface NavBarProps {
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ setSearchQuery }) => {
   return (
-    <AppBar position="static">
-      <Container maxWidth="lg">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My E-Commerce Store
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Button color="inherit">Home</Button>
-            <Button color="inherit">Shop</Button>
-            <Button color="inherit">Login</Button>
+    <AppBar position="sticky">
+      <Toolbar>
+        <Grid container alignItems="center" spacing={4}>
+          {/* Logo */}
+          <Grid item xs={3} sm={2}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
+              E-Shop
+            </Typography>
+          </Grid>
+          {/* NavLinks */}
+          <Grid
+            item
+            sm={8}
+            sx={{
+              display: { xs: "none", sm: "flex" },
+            }}
+          >
+            <NavLinks />
+          </Grid>
+          {/* SearchBar */}
+          <Grid item xs={7} sx={{ display: { xs: "block", sm: "none" } }}>
+            <SearchBar onSearch={setSearchQuery} height={30} width="100%" />
+          </Grid>
+          {/* Cart and User Icons */}
+          <Grid
+            item
+            xs={1}
+            sm={2}
+            sx={{
+              display: { xs: "none", sm: "flex" },
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
             <IconButton color="inherit">
               <Badge badgeContent={5} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-          </Box>
-        </Toolbar>
-      </Container>
+            <IconButton color="inherit" sx={{ marginLeft: 1 }}>
+              <AccountCircleIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Toolbar>
     </AppBar>
   );
 };
 
-export default Navbar;
+export default NavBar;

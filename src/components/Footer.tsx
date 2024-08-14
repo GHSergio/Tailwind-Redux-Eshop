@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Typography, Link, Box } from "@mui/material";
+import { Grid, Typography, Link, Box, AppBar, Toolbar } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -7,56 +7,109 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 const Footer: React.FC = () => {
   return (
-    <Box
+    <AppBar
+      position="static"
       component="footer"
-      sx={{ backgroundColor: "primary.main", padding: 4, marginTop: 4 }}
+      sx={{ backgroundColor: "primary.main" }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" color="white">
+      <Toolbar>
+        <Grid
+          container
+          sx={{
+            width: "100%",
+            marginX: "auto",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {/* copyRight */}
+          <Grid item xs={4} sm={4} sx={{ textAlign: "center" }}>
+            <Typography
+              variant="h6"
+              color="white"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               E-Shop
             </Typography>
-            <Typography variant="body2" color="white">
+            <Typography
+              variant="body2"
+              color="white"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               &copy; 2024 Your Company. All rights reserved.
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" color="white">
+
+          {/* Follow Us */}
+          <Grid item xs={4} sm={4} sx={{ textAlign: "center" }}>
+            <Typography
+              variant="h6"
+              color="white"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               Follow Us
             </Typography>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: { xs: 1, sm: 2 },
+              }}
+            >
               <Link href="#" color="inherit">
-                <FacebookIcon />
+                <FacebookIcon sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }} />
               </Link>
               <Link href="#" color="inherit">
-                <InstagramIcon />
+                <InstagramIcon
+                  sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+                />
               </Link>
               <Link href="#" color="inherit">
-                <TwitterIcon />
+                <TwitterIcon sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }} />
               </Link>
               <Link href="#" color="inherit">
-                <LinkedInIcon />
+                <LinkedInIcon sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }} />
               </Link>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" color="white">
+
+          {/* Quick Links */}
+          <Grid item xs={4} sm={4} sx={{ textAlign: "center" }}>
+            <Typography
+              variant="h6"
+              color="white"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               Quick Links
             </Typography>
-            <Link href="#" color="inherit" display="block">
+            <Link
+              href="#"
+              color="inherit"
+              display="block"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               Privacy Policy
             </Link>
-            <Link href="#" color="inherit" display="block">
+            <Link
+              href="#"
+              color="inherit"
+              display="block"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               Terms of Service
             </Link>
-            <Link href="#" color="inherit" display="block">
+            <Link
+              href="#"
+              color="inherit"
+              display="block"
+              sx={{ fontSize: { xs: "0.5rem", sm: "1rem" } }}
+            >
               Contact Us
             </Link>
           </Grid>
         </Grid>
-      </Container>
-    </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

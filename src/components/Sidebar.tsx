@@ -1,52 +1,28 @@
 import React, { useState } from "react";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Button from "@mui/material/Button";
+import { List, ListItem, ListItemText, Box } from "@mui/material";
 
-const Sidebar: React.FC = () => {
-  const [open, setOpen] = useState(false);
-
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-      setOpen(open);
-    };
-
-  const categories = ["Women", "Men", "Kids", "Accessories"];
+const SideBar: React.FC = () => {
+  const categories = ["短袖", "短褲", "長褲", "長袖"];
 
   return (
     <>
-      <Button
-        onMouseEnter={toggleDrawer(true)}
-        onMouseLeave={toggleDrawer(false)}
-        onClick={toggleDrawer(true)}
-      >
-        Categories
-      </Button>
-      <Drawer
-        anchor="left"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onMouseLeave={toggleDrawer(false)}
+      <Box
+        sx={{
+          padding: 0,
+          margin: 2,
+          boxShadow: "0 0 2px 3px rgba(255,255,255,0.3)",
+        }}
       >
         <List>
-          {categories.map((text) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
+          {categories.map((category, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={category} />
             </ListItem>
           ))}
         </List>
-      </Drawer>
+      </Box>
     </>
   );
 };
 
-export default Sidebar;
+export default SideBar;
