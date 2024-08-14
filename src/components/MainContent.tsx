@@ -14,28 +14,36 @@ import HomeIcon from "@mui/icons-material/Home";
 import NavLink from "./NavLinks";
 import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";
-import Sidebar from "./SideBar";
+// import Sidebar from "./SideBar";
+import { useProductContext } from "../contexts/ProductContext";
 
-interface MainContentProps {
-  filteredProducts: Array<{
-    id: number;
-    name: string;
-    price: string;
-    discountPrice?: string;
-    image: string;
-  }>;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}
+interface MainContentProps {}
 
-const MainContent: React.FC<MainContentProps> = ({
-  filteredProducts,
-  setSearchQuery,
-}) => {
+const MainContent: React.FC<MainContentProps> = ({}) => {
+  const [isNavLinksVisible, setIsNavLinksVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleNavLinksVisible = () => {
+    setIsNavLinksVisible(!isNavLinksVisible);
+  };
+
+  // 使用 useProductContext 獲取 context 中的數據
+  const { products, categories, loading, error, setSearchQuery } =
+    useProductContext();
+
+  console.log(products, categories);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   // 定義 Icon 樣式
   const iconStyle = (size: string = "1.2rem") => ({
@@ -44,7 +52,7 @@ const MainContent: React.FC<MainContentProps> = ({
     marginBottom: "-1px",
   });
 
-  //定義 Typography 樣式
+  // 定義 Typography 樣式
   const TypographyStyle = () => ({
     fontSize: "0.5rem",
   });
@@ -61,7 +69,7 @@ const MainContent: React.FC<MainContentProps> = ({
         }}
       >
         {/* Sidebar SM */}
-        <Grid
+        {/* <Grid
           item
           xs={2}
           sm={2}
@@ -70,28 +78,30 @@ const MainContent: React.FC<MainContentProps> = ({
             display: { xs: "none", sm: "block" },
           }}
         >
-          <Sidebar />
-        </Grid>
+          <Sidebar categories={categories} />
+        </Grid> */}
 
         {/* NavLink */}
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            position: "fixed",
-            top: "56px",
-            bgcolor: "white",
-            width: "100%",
-            zIndex: 2,
-            boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <NavLink />
-        </Grid>
+        {isNavLinksVisible && (
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              position: "fixed",
+              top: "56px",
+              bgcolor: "white",
+              width: "100%",
+              zIndex: 2,
+              boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <NavLink links={categories} />
+          </Grid>
+        )}
 
         {/* Search & Card */}
-        <Grid item xs={12} sm={10}>
+        <Grid item xs={12} sm={12}>
           {/* SearchBar */}
           <Grid
             item
@@ -104,13 +114,14 @@ const MainContent: React.FC<MainContentProps> = ({
 
           {/* Card container */}
           <Grid container spacing={3} mt={3}>
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                {/* 傳遞 product 資料給 ProductCard */}
                 <ProductCard
                   image={product.image}
-                  name={product.name}
+                  title={product.title}
                   price={product.price}
-                  discountPrice={product.discountPrice}
+                  // discountPrice={product.discountPrice}
                 />
               </Grid>
             ))}
@@ -158,7 +169,11 @@ const MainContent: React.FC<MainContentProps> = ({
             alignItems: "center",
           }}
         >
-          <IconButton color="inherit" sx={iconStyle()} onClick={toggleDrawer}>
+          <IconButton
+            color="inherit"
+            sx={iconStyle()}
+            onClick={toggleNavLinksVisible}
+          >
             <MenuIcon fontSize="inherit" />
           </IconButton>
           <Typography variant="caption" sx={TypographyStyle()}>
@@ -202,9 +217,9 @@ const MainContent: React.FC<MainContentProps> = ({
       </Box>
 
       {/* Sidebar Drawer */}
-      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
-        <Sidebar />
-      </Drawer>
+      {/* <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+        <Sidebar categories={categories} />
+      </Drawer> */}
     </>
   );
 };

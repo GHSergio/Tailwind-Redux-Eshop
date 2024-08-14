@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { List, ListItem, ListItemText, Box } from "@mui/material";
 
-const SideBar: React.FC = () => {
-  const categories = ["短袖", "短褲", "長褲", "長袖"];
+interface SideBarProps {
+  categories: string[];
+}
 
+const SideBar: React.FC<SideBarProps> = ({ categories }) => {
   return (
     <>
       <Box

@@ -11,12 +11,13 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NavLinks from "./NavLinks";
 import SearchBar from "./SearchBar";
+import { useProductContext } from "../contexts/ProductContext";
 
-interface NavBarProps {
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}
+interface NavBarProps {}
 
-const NavBar: React.FC<NavBarProps> = ({ setSearchQuery }) => {
+const NavBar: React.FC<NavBarProps> = ({}) => {
+  const { categories, setSearchQuery } = useProductContext();
+
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -39,7 +40,7 @@ const NavBar: React.FC<NavBarProps> = ({ setSearchQuery }) => {
               display: { xs: "none", sm: "flex" },
             }}
           >
-            <NavLinks />
+            <NavLinks links={categories} />
           </Grid>
           {/* SearchBar */}
           <Grid item xs={7} sx={{ display: { xs: "block", sm: "none" } }}>

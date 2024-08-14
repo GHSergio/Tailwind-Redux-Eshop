@@ -10,16 +10,20 @@ import {
 
 interface ProductCardProps {
   image: string;
-  name: string;
-  price: string;
+  title: string;
+  price: number;
   discountPrice?: string;
+  category?: string;
+  description?: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   image,
-  name,
+  title,
   price,
   discountPrice,
+  category,
+  description,
 }) => {
   return (
     <Card
@@ -29,10 +33,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         height: "100%",
       }}
     >
-      <CardMedia component="img" height="200" image={image} alt={name} />
+      <CardMedia component="img" height="200" image={image} alt={title} />
       <CardContent>
         <Typography variant="h6" component="div" fontSize={"0.8rem"}>
-          {name}
+          {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {discountPrice ? (

@@ -1,9 +1,11 @@
 import React from "react";
 import { Grid, Button, IconButton, Badge, Typography } from "@mui/material";
 
-const links = ["Women", "Men", "Kids", "Baby", "Sport"];
+interface NavLinksProps {
+  links: string[];
+}
 
-const renderLinks = () => {
+const renderLinks = (links: string[]) => {
   return links.map((link, index) => (
     <React.Fragment key={link}>
       <Button color="inherit" sx={{ fontSize: { xs: "0.5rem", sm: "0.8rem" } }}>
@@ -18,10 +20,12 @@ const renderLinks = () => {
   ));
 };
 
-const NavLinks: React.FC = () => {
+const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
+  console.log(links);
+
   return (
     <Grid container justifyContent="center" alignItems="center">
-      {renderLinks()}
+      {renderLinks(links)}
     </Grid>
   );
 };
