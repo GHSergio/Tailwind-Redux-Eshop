@@ -9,6 +9,8 @@ import {
 interface ProductContextType {
   products: Product[];
   categories: string[];
+  currentCategory: string;
+  setCurrentCategory: (category: string) => void;
   loading: boolean;
   error: string | null;
   searchQuery: string;
@@ -32,17 +34,15 @@ export const useProductContext = (): ProductContextType => {
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // 使用 useState 管理產品數據
   const [products, setProducts] = useState<Product[]>([]);
-  // 使用 useState 管理類別數據
   const [categories, setCategories] = useState<string[]>([]);
-  // 使用 useState 管理數據載入狀態
   const [loading, setLoading] = useState(true);
-  // 使用 useState 管理可能發生的錯誤
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentCategory, setCurrentCategory] = useState<string>("");
 
-  // 使用 useEffect 來在組件掛載時觸發數據加載
+  console.log("當前分類:", currentCategory);
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -68,19 +68,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     loadData();
   }, []);
 
-  // 返回一個 Context Provider，將產品和類別數據，以及載入狀態和錯誤信息，提供給子組件
   return (
     <ProductContext.Provider
       value={{
         products,
         categories,
+        currentCategory,
+        setCurrentCategory,
         loading,
         error,
         searchQuery,
         setSearchQuery,
       }}
     >
-      {children} {/* 渲染傳遞進來的子組件 */}
+      {children}
     </ProductContext.Provider>
   );
 };

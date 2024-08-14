@@ -23,14 +23,14 @@ const apiClient = axios.create({
 // 獲取所有產品
 export const fetchAllProducts = async (): Promise<Product[]> => {
   const response = await apiClient.get("/products");
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
 //獲取所有類別
 export const fetchAllCategories = async (): Promise<string[]> => {
   const response = await apiClient.get("./products/categories");
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -39,14 +39,14 @@ export const fetchProductsByCategory = async (
   category: string
 ): Promise<Product[]> => {
   const response = await apiClient.get(`/products/category/${category}`);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
 // 獲取單個產品
 export const fetchProductById = async (id: number): Promise<Product> => {
   const response = await apiClient.get(`/products/${id}`);
-  console.log(response.data);
+  // console.log(response.data);
 
   return response.data;
 };
@@ -56,7 +56,7 @@ export const createProduct = async (
   product: Omit<Product, "id">
 ): Promise<Product> => {
   const response = await apiClient.post("/products", product);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -66,7 +66,7 @@ export const updateProduct = async (
   product: Partial<Product>
 ): Promise<Product> => {
   const response = await apiClient.put(`/products/${id}`, product);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 

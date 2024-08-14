@@ -1,6 +1,7 @@
 import React from "react";
 import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { useProductContext } from "../contexts/ProductContext";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -9,6 +10,7 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch, height, width }) => {
+  const { products } = useProductContext();
   return (
     <TextField
       placeholder="Search"
@@ -27,6 +29,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, height, width }) => {
       }}
       sx={{
         width: width || "100%",
+        bgcolor: "white",
+        borderRadius: "5px",
       }}
     />
   );
