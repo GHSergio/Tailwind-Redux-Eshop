@@ -7,8 +7,10 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
+  id: number;
   image: string;
   title: string;
   price: number;
@@ -18,6 +20,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+  id,
   image,
   title,
   price,
@@ -25,6 +28,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   category,
   description,
 }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/products/${id}`);
+  };
   return (
     <Card
       sx={{
@@ -32,6 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         flexDirection: "column",
         height: "100%",
       }}
+      onClick={handleClick}
     >
       <CardMedia component="img" height="200" image={image} alt={title} />
       <CardContent>

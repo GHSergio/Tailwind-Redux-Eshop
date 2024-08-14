@@ -13,7 +13,7 @@ const HomePage: React.FC = () => {
         sx={{ minHeight: "100vh", width: "100%" }}
       >
         {/* Navbar 區域，固定高度 */}
-        <Grid
+        {/* <Grid
           item
           sx={{
             height: "60px",
@@ -23,15 +23,15 @@ const HomePage: React.FC = () => {
           }}
         >
           <NavBar />
-        </Grid>
+        </Grid> */}
         {/* 主內容區域，佔據剩餘高度 */}
         <Grid item sx={{ flexGrow: 1 }}>
           <MainContent />
         </Grid>
         {/* Footer 區域，固定高度 */}
-        <Grid item sx={{ height: { xs: "60px", sm: "120px" } }}>
+        {/* <Grid item sx={{ height: { xs: "60px", sm: "120px" } }}>
           <Footer />
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );

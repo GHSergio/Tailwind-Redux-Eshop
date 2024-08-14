@@ -1,17 +1,5 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  Box,
-  IconButton,
-  Badge,
-  Drawer,
-  Typography,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import HomeIcon from "@mui/icons-material/Home";
-import NavLink from "./NavLinks";
+import { Grid, Typography } from "@mui/material";
 import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";
 // import Sidebar from "./SideBar";
@@ -20,7 +8,7 @@ import { useProductContext } from "../contexts/ProductContext";
 interface MainContentProps {}
 
 const MainContent: React.FC<MainContentProps> = ({}) => {
-  const [isNavLinksVisible, setIsNavLinksVisible] = useState(false);
+  // const [isNavLinksVisible, setIsNavLinksVisible] = useState(true);
   // 使用 useProductContext 獲取 context 中的數據
   const {
     products,
@@ -42,10 +30,6 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
       product.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
-  const toggleNavLinksVisible = () => {
-    setIsNavLinksVisible(!isNavLinksVisible);
-  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -92,25 +76,6 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
           <Sidebar categories={categories} />
         </Grid> */}
 
-        {/* NavLink */}
-        {isNavLinksVisible && (
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: { xs: "block", sm: "none" },
-              position: "fixed",
-              top: "56px",
-              bgcolor: "white",
-              width: "100%",
-              zIndex: 2,
-              boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <NavLink links={categories} />
-          </Grid>
-        )}
-
         {/* Search & Card */}
         <Grid item xs={12} sm={12}>
           {/* SearchBar */}
@@ -141,6 +106,7 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
                 <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
                   {/* 傳遞 product 資料給 ProductCard */}
                   <ProductCard
+                    id={product.id}
                     image={product.image}
                     title={product.title}
                     price={product.price}
@@ -152,98 +118,6 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
           </Grid>
         </Grid>
       </Grid>
-
-      {/* Bottom Navigation for XS screens */}
-      <Box
-        sx={{
-          position: "sticky",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          bgcolor: "background.paper",
-          display: { xs: "flex", sm: "none" },
-          justifyContent: "space-around",
-          alignItems: "center",
-          boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
-          zIndex: 1000,
-          height: "50px",
-        }}
-      >
-        {/* Home Button */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <IconButton color="inherit" sx={iconStyle()}>
-            <HomeIcon fontSize="inherit" />
-          </IconButton>
-          <Typography variant="caption" sx={TypographyStyle()}>
-            首頁
-          </Typography>
-        </Box>
-
-        {/* Hamburger Menu */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <IconButton
-            color="inherit"
-            sx={iconStyle()}
-            onClick={toggleNavLinksVisible}
-          >
-            <MenuIcon fontSize="inherit" />
-          </IconButton>
-          <Typography variant="caption" sx={TypographyStyle()}>
-            分類
-          </Typography>
-        </Box>
-
-        {/* Cart Icon */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <IconButton color="inherit" sx={iconStyle()}>
-            <Badge badgeContent={5} color="error">
-              <ShoppingCartIcon fontSize="inherit" />
-            </Badge>
-          </IconButton>
-          <Typography variant="caption" sx={TypographyStyle()}>
-            購物車
-          </Typography>
-        </Box>
-
-        {/* User Icon */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <IconButton color="inherit" sx={iconStyle()}>
-            <AccountCircleIcon fontSize="inherit" />
-          </IconButton>
-          <Typography variant="caption" sx={TypographyStyle()}>
-            個人
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Sidebar Drawer */}
-      {/* <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
-        <Sidebar categories={categories} />
-      </Drawer> */}
     </>
   );
 };
