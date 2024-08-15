@@ -4,23 +4,27 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useProductContext } from "../contexts/ProductContext";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  // onSearch: (query: string) => void;
   height?: string | number;
   width?: string | number;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, height, width }) => {
-  const { products } = useProductContext();
+const SearchBar: React.FC<SearchBarProps> = ({ height, width }) => {
+  const { searchQuery, setSearchQuery } = useProductContext();
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
   return (
     <TextField
       placeholder="Search"
       variant="outlined"
-      onChange={(e) => onSearch?.(e.target.value)}
+      value={searchQuery}
+      onChange={(e) => setSearchQuery?.(e.target.value)}
       fullWidth
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <SearchIcon />
+            <SearchIcon onClick={handleClearSearch} />
           </InputAdornment>
         ),
         sx: {
@@ -31,6 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, height, width }) => {
         width: width || "100%",
         bgcolor: "white",
         borderRadius: "5px",
+        marginTop: { xs: "40px", sm: "0px" },
       }}
     />
   );

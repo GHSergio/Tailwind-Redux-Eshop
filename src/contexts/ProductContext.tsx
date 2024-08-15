@@ -5,6 +5,15 @@ import {
   fetchAllCategories,
 } from "../api/FakeStoreAPI";
 
+// 定義購物車商品的資料結構
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 // 定義 Context 的資料結構，包括產品列表、類別列表、載入狀態以及錯誤訊息
 interface ProductContextType {
   products: Product[];
@@ -15,6 +24,12 @@ interface ProductContextType {
   error: string | null;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  // 購物車相關
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: number) => void;
+  updateCartItemQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
 }
 
 // 創建一個 Context，初始值為 undefined，這樣可以讓 TypeScript 檢查確保我們正確使用這個 Context
@@ -36,10 +51,12 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentCategory, setCurrentCategory] = useState<string>("");
+  // 購物車
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   console.log("當前分類:", currentCategory);
 
@@ -68,6 +85,42 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     loadData();
   }, []);
 
+  // 添加到購物車
+  const addToCart = (item: CartItem) => {
+    setCart((prevCart) => {
+      //商品是否已存在購物車內
+      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
+      // 已存在相同 ID 的商品
+      // 找到陣列內相同ID品項 更新數量
+      if (existingItem) {
+        return prevCart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+            : cartItem
+        );
+      } else {
+        return [...prevCart, item];
+      }
+    });
+  };
+
+  // 移除購物車商品
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
+
+  // 更新購物車商品數量
+  const updateCartItemQuantity = (id: number, quantity: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+  };
+
+  // 清空購物車
+  const clearCart = () => {
+    setCart([]);
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -79,6 +132,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
         error,
         searchQuery,
         setSearchQuery,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateCartItemQuantity,
+        clearCart,
       }}
     >
       {children}

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { Grid, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Grid, Typography, Box } from "@mui/material";
 import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";
 // import Sidebar from "./SideBar";
 import { useProductContext } from "../contexts/ProductContext";
 
-interface MainContentProps {}
+interface MainContentProps {
+  category?: string;
+}
 
-const MainContent: React.FC<MainContentProps> = ({}) => {
-  // const [isNavLinksVisible, setIsNavLinksVisible] = useState(true);
+const MainContent: React.FC<MainContentProps> = ({ category }) => {
   // 使用 useProductContext 獲取 context 中的數據
   const {
     products,
@@ -20,11 +21,15 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
     setSearchQuery,
   } = useProductContext();
 
-  // 根據 currentCategory 和 searchQuery 進行過濾
+  // 當 category 改變時，清空搜尋字串
+  useEffect(() => {
+    setSearchQuery("");
+  }, [category, setSearchQuery]);
+
+  // 根據 category 和 searchQuery 進行過濾
   const filteredProducts = products.filter((product) => {
-    // 檢查產品是否符合選中的分類
     const matchesCategory =
-      currentCategory === "" || product.category === currentCategory;
+      !category || product.category.toLowerCase() === category.toLowerCase();
     const matchesSearch =
       searchQuery === "" ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -39,25 +44,13 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
     return <div>Error: {error}</div>;
   }
 
-  // 定義 Icon 樣式
-  const iconStyle = (size: string = "1.2rem") => ({
-    padding: 0,
-    fontSize: size,
-    marginBottom: "-1px",
-  });
-
-  // 定義 Typography 樣式
-  const TypographyStyle = () => ({
-    fontSize: "0.5rem",
-  });
-
   return (
     <>
       {/* Main Container */}
       <Grid
         container
         sx={{
-          width: "100%",
+          width: { xs: "95%", sm: "98%" },
           marginX: "auto",
           marginY: "20px",
           paddingX: { xs: "0", sm: "0.5rem" },
@@ -79,43 +72,39 @@ const MainContent: React.FC<MainContentProps> = ({}) => {
         {/* Search & Card */}
         <Grid item xs={12} sm={12}>
           {/* SearchBar */}
-          <Grid
-            item
-            sm={3}
-            // mt={3}
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            <SearchBar onSearch={setSearchQuery} />
+          <Grid item sm={4} md={4} lg={3}>
+            <SearchBar />
           </Grid>
 
           {/* 顯示結果文字 */}
-          <Grid item mt={3}>
+          <Grid item my={3}>
             符合的結果為 {filteredProducts.length} 筆
           </Grid>
 
-          {/* Card container */}
-          <Grid container spacing={3} mt={0}>
+          {/* Card container with grid layout */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: 2,
+            }}
+          >
             {filteredProducts.length === 0 ? (
-              <Grid item xs={12}>
-                <Typography variant="h6" align="center">
-                  搜尋不到相關結果
-                </Typography>
-              </Grid>
+              <Typography variant="h6" align="center">
+                搜尋不到相關結果
+              </Typography>
             ) : (
               filteredProducts.map((product) => (
-                <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                  {/* 傳遞 product 資料給 ProductCard */}
-                  <ProductCard
-                    id={product.id}
-                    image={product.image}
-                    title={product.title}
-                    price={product.price}
-                    // discountPrice={product.discountPrice}
-                  />
-                </Grid>
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  image={product.image}
+                  title={product.title}
+                  price={product.price}
+                />
               ))
             )}
-          </Grid>
+          </Box>
         </Grid>
       </Grid>
     </>

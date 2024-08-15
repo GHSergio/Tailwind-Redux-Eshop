@@ -1,25 +1,40 @@
 import React from "react";
-import { Grid, Button, Typography } from "@mui/material";
-import { useProductContext } from "../contexts/ProductContext";
+import { Box, Typography } from "@mui/material";
+import { NavLink as RouterNavLink } from "react-router-dom";
 
 interface NavLinksProps {
   links: string[];
 }
 
 const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
-  const { setCurrentCategory } = useProductContext();
-
   return (
-    <Grid container justifyContent="center" alignItems="center">
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       {links.map((link, index) => (
         <React.Fragment key={link}>
-          <Button
-            color="inherit"
-            sx={{ fontSize: { xs: "0.5rem", sm: "0.8rem" } }}
-            onClick={() => setCurrentCategory(link.toLowerCase())}
+          <RouterNavLink
+            to={`/category/${link.toLowerCase()}`}
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              padding: "0 0.3rem",
+            }}
+            className="active"
           >
-            {link}
-          </Button>
+            <Typography
+              variant="button"
+              sx={{
+                fontSize: {
+                  xs: "0.3rem",
+                  sm: "0.5rem",
+                  md: "0.7rem",
+                  lg: "0.8rem",
+                },
+                fontWeight: "bold",
+              }}
+            >
+              {link}
+            </Typography>
+          </RouterNavLink>
           {index < links.length - 1 && (
             <Typography variant="body1" sx={{ mx: 1 }}>
               |
@@ -27,7 +42,7 @@ const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
           )}
         </React.Fragment>
       ))}
-    </Grid>
+    </Box>
   );
 };
 

@@ -25,8 +25,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   title,
   price,
   discountPrice,
-  category,
-  description,
 }) => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -39,9 +37,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         flexDirection: "column",
         height: "100%",
       }}
-      onClick={handleClick}
     >
-      <CardMedia component="img" height="200" image={image} alt={title} />
+      <CardMedia
+        component="img"
+        height="200"
+        image={image}
+        alt={title}
+        sx={{ cursor: "pointer" }}
+        onClick={handleClick}
+      />
       <CardContent>
         <Typography variant="h6" component="div" fontSize={"0.8rem"}>
           {title}

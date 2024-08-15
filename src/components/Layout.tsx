@@ -26,7 +26,7 @@ const Layout: React.FC = () => {
   });
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <NavBar />
       {/* 小螢幕才出現 NavLinks */}
       <Box
@@ -38,12 +38,13 @@ const Layout: React.FC = () => {
           width: "100%",
           zIndex: 2,
           boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
+          lineHeight: "25px",
         }}
       >
         <NavLinks links={categories} />
       </Box>
 
-      <Box sx={{ flex: 1, mt: "60px" }}>
+      <Box sx={{ flex: 1 }}>
         <Outlet />
       </Box>
 

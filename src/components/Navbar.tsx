@@ -12,22 +12,29 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NavLinks from "./NavLinks";
 import SearchBar from "./SearchBar";
 import { useProductContext } from "../contexts/ProductContext";
+import { useNavigate } from "react-router-dom";
 
 interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = ({}) => {
   const { categories, setSearchQuery } = useProductContext();
-
+  const navigate = useNavigate();
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Grid container alignItems="center" spacing={4}>
           {/* Logo */}
-          <Grid item xs={3} sm={2}>
+          <Grid
+            item
+            xs={12}
+            sm={2}
+            onClick={() => navigate("/")}
+            sx={{ cursor: "pointer", textAlign: { xs: "center", sm: "start" } }}
+          >
             <Typography
               variant="h6"
               component="div"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+              sx={{ fontSize: { xs: "1.2rem", sm: "1rem" } }}
             >
               E-Shop
             </Typography>
@@ -38,14 +45,16 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
             sm={8}
             sx={{
               display: { xs: "none", sm: "flex" },
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <NavLinks links={categories} />
           </Grid>
           {/* SearchBar */}
-          <Grid item xs={7} sx={{ display: { xs: "block", sm: "none" } }}>
+          {/* <Grid item xs={7} sx={{ display: { xs: "block", sm: "none" } }}>
             <SearchBar onSearch={setSearchQuery} height={30} width="100%" />
-          </Grid>
+          </Grid> */}
           {/* Cart and User Icons */}
           <Grid
             item
@@ -57,7 +66,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
               alignItems: "center",
             }}
           >
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={() => navigate("/cart")}>
               <Badge badgeContent={5} color="error">
                 <ShoppingCartIcon />
               </Badge>

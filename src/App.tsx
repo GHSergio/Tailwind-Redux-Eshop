@@ -7,6 +7,7 @@ import CartPage from "./pages/CartPage";
 import { ThemeProviderComponent } from "./contexts/ThemeContext";
 import { ProductProvider } from "./contexts/ProductContext";
 import Layout from "./components/Layout";
+import CategoryPage from "./pages/CategoryPage";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />}></Route>
+              <Route path="/category/:category" element={<CategoryPage />} />
               <Route
                 path="products/:id"
                 element={<ProductDetailPage />}

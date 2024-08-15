@@ -1,47 +1,123 @@
 import React from "react";
 import {
-  Container,
+  Box,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
+  Grid,
   Button,
+  Divider,
+  IconButton,
 } from "@mui/material";
-
-const cartItems = [
-  { id: 1, name: "Product 1", price: "$10", quantity: 1 },
-  { id: 2, name: "Product 2", price: "$20", quantity: 2 },
-];
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useProductContext } from "../contexts/ProductContext";
 
 const CartPage: React.FC = () => {
-  const total = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.price.slice(1)) * item.quantity,
-    0
-  );
+  const { cart, removeFromCart, updateCartItemQuantity } = useProductContext();
+
+  const handleQuantityChange = (id: number, newQuantity: number) => {
+    if (newQuantity > 0) {
+      updateCartItemQuantity(id, newQuantity);
+    }
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ marginTop: 4 }}>
-      <Typography variant="h4" component="div" gutterBottom>
+    <Box
+      sx={{
+        height: "100vh",
+        maxWidth: "1000px",
+        margin: "0 auto",
+        padding: "1rem",
+      }}
+    >
+      <Typography variant="h4" component="h1" gutterBottom>
         Shopping Cart
       </Typography>
-      <List>
-        {cartItems.map((item) => (
-          <ListItem key={item.id}>
-            <ListItemText
-              primary={item.name}
-              secondary={`Quantity: ${item.quantity}`}
-            />
-            <Typography variant="body1">{item.price}</Typography>
-          </ListItem>
-        ))}
-      </List>
-      <Typography variant="h6" sx={{ marginTop: 2 }}>
-        Total: ${total.toFixed(2)}
-      </Typography>
-      <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
-        Checkout
-      </Button>
-    </Container>
+
+      {cart.length === 0 ? (
+        <Typography variant="body1">Your cart is empty.</Typography>
+      ) : (
+        <>
+          <Grid container spacing={2}>
+            {cart.map((item) => (
+              <Grid key={item.id} item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        objectFit: "contain",
+                        marginRight: "1rem",
+                      }}
+                    />
+                    <Box>
+                      <Typography variant="h6">{item.title}</Typography>
+                      <Typography variant="body1">
+                        Price: ${item.price}
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: "0.5rem",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity - 1)
+                          }
+                          disabled={item.quantity <= 1}
+                        >
+                          -
+                        </Button>
+                        <Typography variant="body1" sx={{ marginX: "1rem" }}>
+                          {item.quantity}
+                        </Typography>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity + 1)
+                          }
+                        >
+                          +
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Box>
+                  <IconButton onClick={() => removeFromCart(item.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+                <Divider sx={{ marginY: "1rem" }} />
+              </Grid>
+            ))}
+          </Grid>
+
+          <Box sx={{ marginTop: "2rem", textAlign: "right" }}>
+            <Typography variant="h5" gutterBottom>
+              Total: ${calculateTotal()}
+            </Typography>
+            <Button variant="contained" color="primary">
+              Proceed to Checkout
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
   );
 };
 
