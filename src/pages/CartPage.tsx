@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Button, Stepper, Step, StepLabel } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 import CartSummary from "../components/cartStep/CartSummary";
 import ShippingInformation from "../components/cartStep/ShippingInformation";
 import PaymentDetails from "../components/cartStep/PaymentDetails";
@@ -11,13 +19,34 @@ const CartPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [shippingInfo, setShippingInfo] = useState({});
+  const [paymentInfo, setPaymentInfo] = useState({});
+  const [isShippingValid, setIsShippingValid] = useState(false);
+  const [isPaymentValid, setIsPaymentValid] = useState(false);
+  const [isCartValid, setIsCartValid] = useState(false);
 
+  // 驗證表單是否填寫　才能進入下一頁
   const handleNext = () => {
+    if (
+      (activeStep === 0 && !isCartValid) ||
+      (activeStep === 1 && !isShippingValid) ||
+      (activeStep === 2 && !isPaymentValid)
+    ) {
+      return; // Prevent moving to the next step if the form is not valid
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleShippingInfoChange = (info: any) => {
+    setShippingInfo(info);
+  };
+
+  const handlePaymentInfoChange = (info: any) => {
+    setPaymentInfo(info);
   };
 
   const renderStepContent = (step: number) => {
@@ -29,16 +58,38 @@ const CartPage: React.FC = () => {
             setSelectAll={setSelectAll}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
+            onValidChange={setIsCartValid}
           />
         );
       case 1:
-        return <ShippingInformation />;
+        return (
+          <ShippingInformation
+            onInfoChange={handleShippingInfoChange}
+            onValidChange={setIsShippingValid}
+          />
+        );
       case 2:
-        return <PaymentDetails />;
+        return (
+          <PaymentDetails
+            onPaymentChange={handlePaymentInfoChange}
+            onValidChange={setIsPaymentValid}
+          />
+        );
       case 3:
-        return <ReviewOrder />;
+        return (
+          <ReviewOrder paymentInfo={paymentInfo} shippingInfo={shippingInfo} />
+        );
       default:
-        return <div>Unknown Step</div>;
+        return (
+          <Box textAlign="center" mt={4}>
+            <Typography variant="h6" gutterBottom>
+              成功完成訂單流程！
+            </Typography>
+            <Button component={Link} to="/" variant="contained" color="primary">
+              返回主頁面
+            </Button>
+          </Box>
+        );
     }
   };
 
@@ -54,7 +105,6 @@ const CartPage: React.FC = () => {
       <Stepper activeStep={activeStep} sx={{ marginBottom: "1rem" }}>
         {steps.map((label) => (
           <Step key={label}>
-            {/* 調整StepIcon */}
             <StepLabel
               StepIconProps={{
                 sx: {
@@ -64,7 +114,6 @@ const CartPage: React.FC = () => {
                   },
                 },
               }}
-              // 調整StepLabel
               sx={{
                 "& .MuiStepLabel-label": {
                   fontSize: "0.875rem",
@@ -91,25 +140,32 @@ const CartPage: React.FC = () => {
       >
         {renderStepContent(activeStep)}
       </Box>
+
       {/* Button */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-        <Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          variant="contained"
-          color="secondary"
-        >
-          上一步
-        </Button>
-        <Button
-          onClick={handleNext}
-          variant="contained"
-          color="primary"
-          disabled={activeStep === steps.length - 1}
-        >
-          {activeStep === steps.length - 1 ? "下訂單" : "下一步"}
-        </Button>
-      </Box>
+      {activeStep < steps.length && (
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
+          <Button
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            variant="contained"
+            color="secondary"
+          >
+            上一步
+          </Button>
+          <Button
+            onClick={handleNext}
+            variant="contained"
+            color="primary"
+            disabled={
+              (activeStep === 0 && !isCartValid) ||
+              (activeStep === 1 && !isShippingValid) ||
+              (activeStep === 2 && !isPaymentValid)
+            }
+          >
+            {activeStep === steps.length - 1 ? "下訂單" : "下一步"}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

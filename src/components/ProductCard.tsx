@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         height="200"
         image={image}
         alt={title}
-        sx={{ cursor: "pointer" }}
+        sx={{ cursor: "pointer", objectFit: "contain" }}
         onClick={handleClick}
       />
       <CardContent>

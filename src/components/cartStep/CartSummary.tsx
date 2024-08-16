@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -18,6 +18,7 @@ interface CartSummaryProps {
   setSelectAll: (value: boolean) => void;
   selectedItems: number[];
   setSelectedItems: (items: number[]) => void;
+  onValidChange: (isValid: boolean) => void;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -25,8 +26,14 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   setSelectAll,
   selectedItems,
   setSelectedItems,
+  onValidChange,
 }) => {
   const { cart, removeFromCart, updateCartItemQuantity } = useProductContext();
+
+  useEffect(() => {
+    // 當selectedItems改變時，更新是否可以進行下一步的狀態
+    onValidChange(selectedItems.length > 0);
+  }, [selectedItems, onValidChange]);
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -65,26 +72,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       .reduce((count, item) => count + item.quantity, 0);
   };
 
-  const shippingCost = 60; // 假設運費為固定值
-
-  const ButtonStyle = {
-    minWidth: { xs: "1rem", sm: "36px" },
-    fontSize: { xs: "0.3rem", sm: "1rem" },
-  };
-
-  const MainTextStyle = {
-    fontWeight: "bold",
-    fontSize: { xs: "0.5rem", sm: "0.9rem", md: "1rem" },
-  };
-
-  const FooterTextStyle = {
-    fontSize: { xs: "0.6rem", sm: "1rem" },
-  };
-
-  const checkBoxStyle = {
-    width: "0.5rem",
-    transform: { xs: "scale(0.5)", sm: "scale(1)" },
-  };
+  const shippingCost = 60;
 
   return (
     <Box>
@@ -93,7 +81,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         <Checkbox
           checked={selectAll}
           onChange={handleSelectAll}
-          sx={checkBoxStyle}
+          sx={{ transform: { xs: "scale(0.5)", sm: "scale(1)" } }}
         />
         <Typography
           variant="h6"
@@ -127,7 +115,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                 <Checkbox
                   checked={selectedItems.includes(item.id)}
                   onChange={() => handleSelectItem(item.id)}
-                  sx={checkBoxStyle}
+                  sx={{
+                    width: "0.5rem",
+                    transform: { xs: "scale(0.5)", sm: "scale(1)" },
+                  }}
                 />
               </Grid>
               {/* 商品圖片 */}
@@ -146,18 +137,25 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               </Grid>
               <Grid item xs={4}>
                 {/* 商品名稱 */}
-                <Typography variant="body1" sx={MainTextStyle}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.5rem", sm: "1rem" },
+                  }}
+                >
                   {item.title}
                 </Typography>
                 {/* 顏色 & 尺寸 */}
                 <Typography
                   variant="body2"
                   color="textSecondary"
-                  sx={MainTextStyle}
+                  sx={{ fontSize: { xs: "0.4rem", sm: "0.9rem" } }}
                 >
                   {item.color || "N/A"} - {item.size || "N/A"}
                 </Typography>
               </Grid>
+
               {/* 數量Button */}
               <Grid item xs={3}>
                 <Box
@@ -165,7 +163,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    gap: { xs: 0.1, sm: "1rem" },
+                    gap: { xs: "0.1rem", sm: "1rem" },
                   }}
                 >
                   <Button
@@ -175,7 +173,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                       handleQuantityChange(item.id, item.quantity - 1)
                     }
                     disabled={item.quantity <= 1}
-                    sx={ButtonStyle}
+                    sx={{
+                      minWidth: { xs: "1rem", sm: "36px" },
+                      fontSize: { xs: "0.3rem", sm: "1rem" },
+                    }}
                   >
                     -
                   </Button>
@@ -194,14 +195,24 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                     onClick={() =>
                       handleQuantityChange(item.id, item.quantity + 1)
                     }
-                    sx={ButtonStyle}
+                    sx={{
+                      minWidth: { xs: "1rem", sm: "36px" },
+                      fontSize: { xs: "0.3rem", sm: "1rem" },
+                    }}
                   >
                     +
                   </Button>
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Typography variant="body1" align="right" sx={MainTextStyle}>
+                <Typography
+                  variant="body1"
+                  align="right"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.5rem", sm: "1rem" },
+                  }}
+                >
                   ${Math.floor(item.price * item.quantity)}
                 </Typography>
               </Grid>
@@ -226,18 +237,30 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       <Box sx={{ my: 2, mr: 1 }}>
         <Grid container justifyContent="flex-end" spacing={1}>
           <Grid item xs={6}>
-            <Typography variant="body1" align="right" sx={FooterTextStyle}>
+            <Typography
+              variant="body1"
+              align="right"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
               共 {calculateItemsCount()} 件商品
             </Typography>
           </Grid>
 
           <Grid item xs={3}>
-            <Typography variant="body1" align="right" sx={FooterTextStyle}>
+            <Typography
+              variant="body1"
+              align="right"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
               商品金額
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="body1" align="right" sx={FooterTextStyle}>
+            <Typography
+              variant="body1"
+              align="right"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
               $ {Math.floor(calculateTotal())}
             </Typography>
           </Grid>
@@ -245,28 +268,34 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
         <Grid container justifyContent="flex-end" spacing={2}>
           <Grid item xs={9}>
-            <Typography variant="body1" align="right" sx={FooterTextStyle}>
+            <Typography
+              variant="body1"
+              align="right"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
               運費
             </Typography>
           </Grid>
 
           <Grid item xs={3}>
-            <Typography variant="body1" align="right" sx={FooterTextStyle}>
+            <Typography
+              variant="body1"
+              align="right"
+              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
+            >
               $ {shippingCost}
             </Typography>
           </Grid>
         </Grid>
 
         <Divider sx={{ my: 1 }} />
-        {/* 小計 */}
+
         <Grid container justifyContent="flex-end" spacing={2}>
           <Grid item xs={8}>
             <Typography
               variant="h6"
               align="right"
-              sx={{
-                fontSize: { xs: "1rem", sm: "1.2rem" }, // Adjust font size for small screens
-              }}
+              sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
             >
               小計
             </Typography>
@@ -275,11 +304,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
             <Typography
               variant="h6"
               align="right"
-              sx={{
-                fontSize: { xs: "0.7rem", sm: "1.2rem" },
-              }}
+              sx={{ fontSize: { xs: "0.7rem", sm: "1.2rem" } }}
             >
-              $ {calculateTotal() + shippingCost}
+              $ {Math.floor(calculateTotal() + shippingCost)}
             </Typography>
           </Grid>
         </Grid>
