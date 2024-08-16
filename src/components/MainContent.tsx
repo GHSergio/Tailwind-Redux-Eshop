@@ -11,15 +11,8 @@ interface MainContentProps {
 
 const MainContent: React.FC<MainContentProps> = ({ category }) => {
   // 使用 useProductContext 獲取 context 中的數據
-  const {
-    products,
-    categories,
-    currentCategory,
-    searchQuery,
-    loading,
-    error,
-    setSearchQuery,
-  } = useProductContext();
+  const { products, searchQuery, loading, error, setSearchQuery } =
+    useProductContext();
 
   // 當 category 改變時，清空搜尋字串
   useEffect(() => {
@@ -54,6 +47,7 @@ const MainContent: React.FC<MainContentProps> = ({ category }) => {
           marginX: "auto",
           marginY: "20px",
           paddingX: { xs: "0", sm: "0.5rem" },
+          height: "100%",
         }}
       >
         {/* Sidebar SM */}

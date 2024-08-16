@@ -105,9 +105,10 @@ const ProductDetail: React.FC = () => {
     <Box
       sx={{
         maxWidth: "1000px",
-        margin: "0 auto",
+        margin: "1rem auto",
         padding: "1rem",
-        height: "100vh",
+        height: "100%",
+        // height: { xs: "100%", sm: "100%" },
       }}
     >
       {/* 上面中容器 */}
@@ -125,6 +126,7 @@ const ProductDetail: React.FC = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            width: "100%",
           }}
         >
           <img
@@ -137,7 +139,12 @@ const ProductDetail: React.FC = () => {
         {/* 右側區域：商品詳情 */}
         <Box sx={{ flex: 1 }}>
           {/* 商品名稱 */}
-          <Typography variant="h5" component="h1" gutterBottom>
+          <Typography
+            variant="h5"
+            component="h1"
+            gutterBottom
+            sx={{ fontSize: { xs: "1.15rem", sm: "2rem" } }}
+          >
             {product.title} {selectedColor && `- ${selectedColor}`}{" "}
             {selectedSize && `(${selectedSize})`}
           </Typography>

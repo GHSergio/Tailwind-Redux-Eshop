@@ -8,10 +8,19 @@ import HomeIcon from "@mui/icons-material/Home";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import NavLinks from "./NavLinks";
+import CartDropdown from "./CartDropdown";
 import { useProductContext } from "../contexts/ProductContext";
+import { useNavigate } from "react-router-dom";
 
 const Layout: React.FC = () => {
-  const { categories } = useProductContext();
+  const {
+    categories,
+    cartItemCount,
+    showCart,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = useProductContext();
+  const navigate = useNavigate();
 
   // 定義 Icon 樣式
   const iconStyle = (size: string = "1.2rem") => ({
@@ -26,17 +35,26 @@ const Layout: React.FC = () => {
   });
 
   return (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Box
+      sx={{
+        // minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <NavBar />
+
       {/* 小螢幕才出現 NavLinks */}
       <Box
         sx={{
           display: { xs: "block", sm: "none" },
-          position: "fixed",
+          position: "sticky",
+          height: "100%",
           top: "56px",
           bgcolor: "white",
-          width: "100%",
-          zIndex: 2,
+          width: "100vw",
+          zIndex: 1000,
           boxShadow: "0 0 3px 2px rgba(0, 0, 0, 0.1)",
           lineHeight: "25px",
         }}
@@ -108,14 +126,34 @@ const Layout: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <IconButton color="inherit" sx={iconStyle()}>
+          <IconButton
+            color="inherit"
+            sx={iconStyle()}
+            onClick={() => navigate("/cart")}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            {cartItemCount > 0 ? (
+              <Badge badgeContent={cartItemCount} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            ) : (
+              <ShoppingCartIcon />
+            )}
+          </IconButton>
+          <Typography variant="caption" sx={TypographyStyle()}>
+            購物車
+          </Typography>
+          {showCart && <CartDropdown />}
+
+          {/* <IconButton color="inherit" sx={iconStyle()}>
             <Badge badgeContent={5} color="error">
               <ShoppingCartIcon fontSize="inherit" />
             </Badge>
           </IconButton>
           <Typography variant="caption" sx={TypographyStyle()}>
             購物車
-          </Typography>
+          </Typography> */}
         </Box>
 
         {/* User Icon */}
@@ -134,6 +172,7 @@ const Layout: React.FC = () => {
           </Typography>
         </Box>
       </Box>
+
       <Footer />
     </Box>
   );

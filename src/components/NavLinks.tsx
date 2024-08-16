@@ -8,7 +8,12 @@ interface NavLinksProps {
 
 const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       {links.map((link, index) => (
         <React.Fragment key={link}>
           <RouterNavLink

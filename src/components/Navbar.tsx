@@ -10,15 +10,21 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NavLinks from "./NavLinks";
-import SearchBar from "./SearchBar";
+import CartDropdown from "./CartDropdown";
+// import SearchBar from "./SearchBar";
 import { useProductContext } from "../contexts/ProductContext";
 import { useNavigate } from "react-router-dom";
 
-interface NavBarProps {}
-
-const NavBar: React.FC<NavBarProps> = ({}) => {
-  const { categories, setSearchQuery } = useProductContext();
+const NavBar: React.FC = () => {
+  const {
+    categories,
+    cartItemCount,
+    showCart,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = useProductContext();
   const navigate = useNavigate();
+
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -55,6 +61,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
           {/* <Grid item xs={7} sx={{ display: { xs: "block", sm: "none" } }}>
             <SearchBar onSearch={setSearchQuery} height={30} width="100%" />
           </Grid> */}
+
           {/* Cart and User Icons */}
           <Grid
             item
@@ -66,15 +73,27 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
               alignItems: "center",
             }}
           >
-            <IconButton color="inherit" onClick={() => navigate("/cart")}>
-              <Badge badgeContent={5} color="error">
+            <IconButton
+              color="inherit"
+              onClick={() => navigate("/cart")}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              {cartItemCount > 0 ? (
+                <Badge badgeContent={cartItemCount} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              ) : (
                 <ShoppingCartIcon />
-              </Badge>
+              )}
             </IconButton>
+
             <IconButton color="inherit" sx={{ marginLeft: 1 }}>
               <AccountCircleIcon />
             </IconButton>
           </Grid>
+          {/* Cart Dropdown */}
+          {showCart && <CartDropdown />}
         </Grid>
       </Toolbar>
     </AppBar>
