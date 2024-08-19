@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useProductContext } from "../contexts/ProductContext";
 import CartSummary from "../components/cartStep/CartSummary";
 import ShippingInformation from "../components/cartStep/ShippingInformation";
 import PaymentDetails from "../components/cartStep/PaymentDetails";
@@ -16,7 +17,7 @@ import ReviewOrder from "../components/cartStep/ReviewOrder";
 const steps = ["確認購物車", "運送資訊", "付費方式", "確認訂單"];
 
 interface SelectedItem {
-  id: number;
+  id: string;
   color: string;
   size: string;
 }
@@ -33,6 +34,7 @@ const CartPage: React.FC = () => {
   const [isPaymentValid, setIsPaymentValid] = useState(false);
 
   console.log(selectedItems);
+  const { clearCart } = useProductContext();
 
   // 驗證表單是否填寫　才能進入Next Step
   const handleNext = () => {
@@ -96,7 +98,13 @@ const CartPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               成功完成訂單流程！
             </Typography>
-            <Button component={Link} to="/" variant="contained" color="primary">
+            <Button
+              component={Link}
+              to="/"
+              variant="contained"
+              color="primary"
+              onClick={clearCart}
+            >
               返回主頁面
             </Button>
           </Box>

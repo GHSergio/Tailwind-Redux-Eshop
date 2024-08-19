@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useProductContext } from "../../contexts/ProductContext";
 
 interface SelectedItem {
-  id: number;
+  id: string;
   color: string;
   size: string;
 }
@@ -50,11 +50,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
   // 選擇Cart全部品項
   const handleSelectAll = () => {
-    // 已經checked全選
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      // 尚未checked全選
       setSelectedItems(
         cart.map((item) => ({
           id: item.id,
@@ -67,7 +65,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   };
 
   // 當選擇Cart內特定品項
-  const handleSelectItem = (id: number, color: string, size: string) => {
+  const handleSelectItem = (id: string, color: string, size: string) => {
     const isSelected = selectedItems.some(
       (item) => item.id === id && item.color === color && item.size === size
     );
@@ -88,7 +86,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
   // 改變商品數量
   const handleQuantityChange = (
-    id: number,
+    id: string,
     color: string,
     size: string,
     newQuantity: number

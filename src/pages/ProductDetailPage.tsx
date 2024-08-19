@@ -55,8 +55,11 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (product) {
+      // 生成唯一的 ID，基於原始 ID、顏色和尺寸
+      const uniqueId = `${product.id}-${selectedColor}-${selectedSize}`;
       addToCart({
-        id: product.id,
+        id: uniqueId,
+        // id: product.id,
         title: product.title,
         price: product.price,
         quantity,

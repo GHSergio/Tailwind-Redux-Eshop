@@ -7,7 +7,7 @@ import {
 
 // 定義購物車商品的資料結構
 interface CartItem {
-  id: number;
+  id: string;
   image: string;
   title: string;
   price: number;
@@ -24,12 +24,13 @@ interface ProductContextType {
   error: string | null;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+
   // 購物車相關
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: number, color: string, size: string) => void;
+  removeFromCart: (id: string, color: string, size: string) => void;
   updateCartItemQuantity: (
-    id: number,
+    id: string,
     color: string,
     size: string,
     quantity: number
@@ -128,10 +129,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // 移除購物車商品
-  // const removeFromCart = (id: number) => {
-  //   setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  // };
-  const removeFromCart = (id: number, color: string, size: string) => {
+  // 比對id & color & size;
+  const removeFromCart = (id: string, color: string, size: string) => {
     setCart((prevCart) =>
       prevCart.filter(
         (item) => item.id !== id || item.color !== color || item.size !== size
@@ -139,9 +138,9 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  // 更新購物車商品數量
+  //更新購物車商品數量
   const updateCartItemQuantity = (
-    id: number,
+    id: string,
     color: string,
     size: string,
     quantity: number
