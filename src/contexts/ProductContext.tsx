@@ -81,7 +81,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
           fetchAllProducts(),
           fetchAllCategories(),
         ]);
-        console.log("商品資訊:", productsData);
+        // console.log("商品資訊:", productsData);
 
         // 將獲取到的產品數據設置到 state
         setProducts(productsData);

@@ -14,11 +14,17 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useProductContext } from "../../contexts/ProductContext";
 
+interface SelectedItem {
+  id: number;
+  color: string;
+  size: string;
+}
+
 interface CartSummaryProps {
   selectAll: boolean;
   setSelectAll: (value: boolean) => void;
-  selectedItems: number[];
-  setSelectedItems: (items: number[]) => void;
+  selectedItems: SelectedItem[];
+  setSelectedItems: (items: SelectedItem[]) => void;
   onValidChange: (isValid: boolean) => void;
 }
 
@@ -44,22 +50,39 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
   // 選擇Cart全部品項
   const handleSelectAll = () => {
+    // 已經checked全選
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(cart.map((item) => item.id));
+      // 尚未checked全選
+      setSelectedItems(
+        cart.map((item) => ({
+          id: item.id,
+          color: item.color,
+          size: item.size,
+        }))
+      );
     }
     setSelectAll(!selectAll);
   };
 
   // 當選擇Cart內特定品項
-  const handleSelectItem = (id: number) => {
-    // 已存在則移除checked
-    if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
+  const handleSelectItem = (id: number, color: string, size: string) => {
+    const isSelected = selectedItems.some(
+      (item) => item.id === id && item.color === color && item.size === size
+    );
+
+    // 已被選擇則移除checked
+    if (isSelected) {
+      setSelectedItems(
+        selectedItems.filter(
+          (item) =>
+            !(item.id === id && item.color === color && item.size === size)
+        )
+      );
     } else {
-      // 不存在則添加checked
-      setSelectedItems([...selectedItems, id]);
+      // 沒被選擇則添加checked
+      setSelectedItems([...selectedItems, { id, color, size }]);
     }
   };
 
@@ -78,14 +101,28 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   // 計算選中的商品的總金額
   const calculateTotal = () => {
     return cart
-      .filter((item) => selectedItems.includes(item.id))
+      .filter((item) =>
+        selectedItems.some(
+          (selectedItem) =>
+            selectedItem.id === item.id &&
+            selectedItem.color === item.color &&
+            selectedItem.size === item.size
+        )
+      )
       .reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   // 計算選中的商品的總數量
   const calculateItemsCount = () => {
     return cart
-      .filter((item) => selectedItems.includes(item.id))
+      .filter((item) =>
+        selectedItems.some(
+          (selectedItem) =>
+            selectedItem.id === item.id &&
+            selectedItem.color === item.color &&
+            selectedItem.size === item.size
+        )
+      )
       .reduce((count, item) => count + item.quantity, 0);
   };
 
@@ -133,8 +170,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               {/* checkBox */}
               <Grid item xs={1} sx={{ textAlign: "center" }}>
                 <Checkbox
-                  checked={selectedItems.includes(item.id)}
-                  onChange={() => handleSelectItem(item.id)}
+                  checked={selectedItems.some(
+                    (selectedItem) =>
+                      selectedItem.id === item.id &&
+                      selectedItem.color === item.color &&
+                      selectedItem.size === item.size
+                  )}
+                  onChange={() =>
+                    handleSelectItem(item.id, item.color, item.size)
+                  }
                   sx={{
                     width: "0.5rem",
                     transform: { xs: "scale(0.5)", sm: "scale(1)" },

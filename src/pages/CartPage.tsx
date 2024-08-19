@@ -15,10 +15,16 @@ import ReviewOrder from "../components/cartStep/ReviewOrder";
 
 const steps = ["確認購物車", "運送資訊", "付費方式", "確認訂單"];
 
+interface SelectedItem {
+  id: number;
+  color: string;
+  size: string;
+}
+
 const CartPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [shippingInfo, setShippingInfo] = useState({});
   const [paymentInfo, setPaymentInfo] = useState({});
   // 驗證
@@ -28,26 +34,28 @@ const CartPage: React.FC = () => {
 
   console.log(selectedItems);
 
-  // 驗證表單是否填寫　才能進入下一頁
+  // 驗證表單是否填寫　才能進入Next Step
   const handleNext = () => {
     if (
       (activeStep === 0 && !isCartValid) ||
       (activeStep === 1 && !isShippingValid) ||
       (activeStep === 2 && !isPaymentValid)
     ) {
-      return; // Prevent moving to the next step if the form is not valid
+      return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  //回到上個Step
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  //儲存 運送資訊
   const handleShippingInfoChange = (info: any) => {
     setShippingInfo(info);
   };
-
+  //儲存 支付資訊
   const handlePaymentInfoChange = (info: any) => {
     setPaymentInfo(info);
   };
