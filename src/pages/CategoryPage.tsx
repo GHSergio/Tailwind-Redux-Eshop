@@ -5,6 +5,7 @@ import { Grid, Typography } from "@mui/material";
 import MainContent from "../components/MainContent";
 
 const CategoryPage: React.FC = () => {
+  //從網址動態參數獲取category
   const { category } = useParams<{ category: string }>();
 
   return (

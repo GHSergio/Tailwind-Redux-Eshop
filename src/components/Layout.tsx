@@ -1,7 +1,7 @@
 // Layout.tsx
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Box, Grid, IconButton, Typography, Badge } from "@mui/material";
+import { Box, IconButton, Typography, Badge } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 const Layout: React.FC = () => {
   const {
-    categories,
+    categories, //目前是API提供的分類
     cartItemCount,
     showCart,
     handleMouseEnter,
@@ -90,7 +90,11 @@ const Layout: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <IconButton color="inherit" sx={iconStyle()}>
+          <IconButton
+            color="inherit"
+            sx={iconStyle()}
+            onClick={() => navigate("/")}
+          >
             <HomeIcon fontSize="inherit" />
           </IconButton>
           <Typography variant="caption" sx={TypographyStyle()}>

@@ -9,6 +9,7 @@ import {
   Button,
   Card,
   CardMedia,
+  Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useProductContext } from "../../contexts/ProductContext";
@@ -35,6 +36,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     onValidChange(selectedItems.length > 0);
   }, [selectedItems, onValidChange]);
 
+  const buttonTextStyle = {
+    minWidth: { xs: "1rem", sm: "36px" },
+    fontSize: { xs: "0.3rem", sm: "1rem" },
+  };
+  const footerTextStyle = { fontSize: { xs: "0.6rem", sm: "1rem" } };
+
+  // 選擇Cart全部品項
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedItems([]);
@@ -44,17 +52,26 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     setSelectAll(!selectAll);
   };
 
+  // 當選擇Cart內特定品項
   const handleSelectItem = (id: number) => {
+    // 已存在則移除checked
     if (selectedItems.includes(id)) {
       setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
     } else {
+      // 不存在則添加checked
       setSelectedItems([...selectedItems, id]);
     }
   };
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
+  // 改變商品數量
+  const handleQuantityChange = (
+    id: number,
+    color: string,
+    size: string,
+    newQuantity: number
+  ) => {
     if (newQuantity > 0) {
-      updateCartItemQuantity(id, newQuantity);
+      updateCartItemQuantity(id, color, size, newQuantity);
     }
   };
 
@@ -72,7 +89,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       .reduce((count, item) => count + item.quantity, 0);
   };
 
+  const totalAmount = Math.floor(calculateTotal());
   const shippingCost = 60;
+  const discount = totalAmount > 100 ? shippingCost : 0;
+  const finalTotal = totalAmount + shippingCost - discount;
 
   return (
     <Box>
@@ -137,15 +157,20 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               </Grid>
               <Grid item xs={4}>
                 {/* 商品名稱 */}
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "0.5rem", sm: "1rem" },
-                  }}
-                >
-                  {item.title}
-                </Typography>
+                <Tooltip title={item.title}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: { xs: "0.5rem", sm: "1rem" },
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
+                </Tooltip>
                 {/* 顏色 & 尺寸 */}
                 <Typography
                   variant="body2"
@@ -170,13 +195,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                     variant="outlined"
                     size="small"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.quantity - 1)
+                      handleQuantityChange(
+                        item.id,
+                        item.color,
+                        item.size,
+                        item.quantity - 1
+                      )
                     }
                     disabled={item.quantity <= 1}
-                    sx={{
-                      minWidth: { xs: "1rem", sm: "36px" },
-                      fontSize: { xs: "0.3rem", sm: "1rem" },
-                    }}
+                    sx={buttonTextStyle}
                   >
                     -
                   </Button>
@@ -193,17 +220,20 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                     variant="outlined"
                     size="small"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.quantity + 1)
+                      handleQuantityChange(
+                        item.id,
+                        item.color,
+                        item.size,
+                        item.quantity + 1
+                      )
                     }
-                    sx={{
-                      minWidth: { xs: "1rem", sm: "36px" },
-                      fontSize: { xs: "0.3rem", sm: "1rem" },
-                    }}
+                    sx={buttonTextStyle}
                   >
                     +
                   </Button>
                 </Box>
               </Grid>
+
               <Grid item xs={2}>
                 <Typography
                   variant="body1"
@@ -218,7 +248,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               </Grid>
 
               <IconButton
-                onClick={() => removeFromCart(item.id)}
+                onClick={() => removeFromCart(item.id, item.color, item.size)}
                 sx={{
                   position: "absolute",
                   top: 0,
@@ -235,61 +265,63 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
       {/* Footer */}
       <Box sx={{ my: 2, mr: 1 }}>
+        {/* 商品金額 */}
         <Grid container justifyContent="flex-end" spacing={1}>
           <Grid item xs={6}>
-            <Typography
-              variant="body1"
-              align="right"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
-            >
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
               共 {calculateItemsCount()} 件商品
             </Typography>
           </Grid>
 
           <Grid item xs={3}>
-            <Typography
-              variant="body1"
-              align="right"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
-            >
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
               商品金額
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography
-              variant="body1"
-              align="right"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
-            >
-              $ {Math.floor(calculateTotal())}
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
+              $ {totalAmount}
             </Typography>
           </Grid>
         </Grid>
 
+        {/* 運費 */}
         <Grid container justifyContent="flex-end" spacing={2}>
-          <Grid item xs={9}>
-            <Typography
-              variant="body1"
-              align="right"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
-            >
+          <Grid item xs={6}>
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
+              滿$100免運費
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
               運費
             </Typography>
           </Grid>
 
           <Grid item xs={3}>
-            <Typography
-              variant="body1"
-              align="right"
-              sx={{ fontSize: { xs: "0.6rem", sm: "1rem" } }}
-            >
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
               $ {shippingCost}
             </Typography>
           </Grid>
         </Grid>
 
+        {/* 運費折抵 */}
+        <Grid container justifyContent="flex-end" spacing={2}>
+          <Grid item xs={9}>
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
+              運費折抵
+            </Typography>
+          </Grid>
+
+          <Grid item xs={3}>
+            <Typography variant="body1" align="right" sx={footerTextStyle}>
+              -$ {discount}
+            </Typography>
+          </Grid>
+        </Grid>
         <Divider sx={{ my: 1 }} />
 
+        {/* 小計 */}
         <Grid container justifyContent="flex-end" spacing={2}>
           <Grid item xs={8}>
             <Typography
@@ -306,7 +338,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               align="right"
               sx={{ fontSize: { xs: "0.7rem", sm: "1.2rem" } }}
             >
-              $ {Math.floor(calculateTotal() + shippingCost)}
+              $ {finalTotal}
             </Typography>
           </Grid>
         </Grid>

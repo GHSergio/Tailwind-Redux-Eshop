@@ -17,6 +17,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />}></Route>
+              {/* :參數 -> 動態參數 */}
               <Route path="/category/:category" element={<CategoryPage />} />
               <Route
                 path="products/:id"

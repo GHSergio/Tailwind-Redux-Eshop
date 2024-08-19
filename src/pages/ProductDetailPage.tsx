@@ -15,6 +15,7 @@ import { useProductContext } from "../contexts/ProductContext";
 import { Product, fetchProductById } from "../api/FakeStoreAPI";
 
 const ProductDetail: React.FC = () => {
+  //從網址動態參數獲取id
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,19 +24,27 @@ const ProductDetail: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
 
-  const { addToCart } = useProductContext(); // 从上下文中获取addToCart函数
+  const { addToCart } = useProductContext();
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
         const fetchedProduct = await fetchProductById(Number(id));
         setProduct(fetchedProduct);
+
         if (fetchedProduct) {
-          setSelectedColor(""); // 假设有颜色属性，这里可以根据商品数据设置初始颜色
-          setSelectedSize(""); // 假设有尺寸属性，这里可以根据商品数据设置初始尺寸
+          const updatedProduct = {
+            ...fetchedProduct,
+            sizes: ["S", "M", "L", "XL"],
+            colors: ["Red", "Blue", "Green", "Yellow"],
+          };
+          console.log(updatedProduct);
+          setProduct(updatedProduct);
+          setSelectedColor(updatedProduct.colors[0]);
+          setSelectedSize(updatedProduct.sizes[0]);
         }
       } catch (err) {
-        setError("Failed to load product details.");
+        setError("商品資訊獲取失敗");
       } finally {
         setLoading(false);
       }
@@ -52,6 +61,8 @@ const ProductDetail: React.FC = () => {
         price: product.price,
         quantity,
         image: product.image,
+        color: selectedColor,
+        size: selectedSize,
       });
     }
   };
@@ -96,7 +107,7 @@ const ProductDetail: React.FC = () => {
           height: "100vh",
         }}
       >
-        <Typography variant="h6">Product not found</Typography>
+        <Typography variant="h6">找不到該商品資訊</Typography>
       </Box>
     );
   }
@@ -108,7 +119,6 @@ const ProductDetail: React.FC = () => {
         margin: "1rem auto",
         padding: "1rem",
         height: "100%",
-        // height: { xs: "100%", sm: "100%" },
       }}
     >
       {/* 上面中容器 */}

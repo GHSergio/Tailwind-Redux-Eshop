@@ -21,9 +21,12 @@ const CartPage: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [shippingInfo, setShippingInfo] = useState({});
   const [paymentInfo, setPaymentInfo] = useState({});
+  // 驗證
+  const [isCartValid, setIsCartValid] = useState(false);
   const [isShippingValid, setIsShippingValid] = useState(false);
   const [isPaymentValid, setIsPaymentValid] = useState(false);
-  const [isCartValid, setIsCartValid] = useState(false);
+
+  console.log(selectedItems);
 
   // 驗證表單是否填寫　才能進入下一頁
   const handleNext = () => {

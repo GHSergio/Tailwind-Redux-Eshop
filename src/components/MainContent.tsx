@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Grid, Typography, Box } from "@mui/material";
 import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";

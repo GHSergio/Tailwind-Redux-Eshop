@@ -12,8 +12,8 @@ interface CartItem {
   title: string;
   price: number;
   quantity: number;
-  color?: string;
-  size?: string;
+  color: string;
+  size: string;
 }
 
 // 定義 Context 的資料結構，包括產品列表、類別列表、載入狀態以及錯誤訊息
@@ -27,8 +27,13 @@ interface ProductContextType {
   // 購物車相關
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: number) => void;
-  updateCartItemQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: number, color: string, size: string) => void;
+  updateCartItemQuantity: (
+    id: number,
+    color: string,
+    size: string,
+    quantity: number
+  ) => void;
   clearCart: () => void;
   // 管理購物車視窗顯示狀態
   showCart: boolean;
@@ -61,11 +66,13 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  // const [currentCategory, setCurrentCategory] = useState<string>("");
   // 購物車
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
 
+  console.log("購物車:", cart);
+
+  //從API獲取商品列表 & 分類列表
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -74,13 +81,15 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
           fetchAllProducts(),
           fetchAllCategories(),
         ]);
+        console.log("商品資訊:", productsData);
+
         // 將獲取到的產品數據設置到 state
         setProducts(productsData);
         // 將獲取到的類別數據設置到 state
         setCategories(categoriesData);
       } catch (err) {
         // 如果發生錯誤，將錯誤信息設置到 state
-        setError("Failed to load data");
+        setError("商品清單獲取失敗");
       } finally {
         // 無論成功或失敗，都將 loading 狀態設置為 false
         setLoading(false);
@@ -94,31 +103,55 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   // 添加到購物車
   const addToCart = (item: CartItem) => {
     setCart((prevCart) => {
-      //商品是否已存在購物車內
-      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
-      // 已存在相同 ID 的商品
-      // 找到陣列內相同ID品項 更新數量
+      //檢查相同id & color & size品項 是否已存在購物車內
+      const existingItem = prevCart.find(
+        (cartItem) =>
+          cartItem.id === item.id &&
+          cartItem.color === item.color &&
+          cartItem.size === item.size
+      );
+
+      // 如果找到相同ID、顏色、尺寸的商品，更新數量
       if (existingItem) {
         return prevCart.map((cartItem) =>
-          cartItem.id === item.id
+          cartItem.id === item.id &&
+          cartItem.color === item.color &&
+          cartItem.size === item.size
             ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
             : cartItem
         );
       } else {
+        // 如果沒有找到相同的商品，將新商品添加到購物車
         return [...prevCart, item];
       }
     });
   };
 
   // 移除購物車商品
-  const removeFromCart = (id: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  // const removeFromCart = (id: number) => {
+  //   setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  // };
+  const removeFromCart = (id: number, color: string, size: string) => {
+    setCart((prevCart) =>
+      prevCart.filter(
+        (item) => item.id !== id || item.color !== color || item.size !== size
+      )
+    );
   };
 
   // 更新購物車商品數量
-  const updateCartItemQuantity = (id: number, quantity: number) => {
+  const updateCartItemQuantity = (
+    id: number,
+    color: string,
+    size: string,
+    quantity: number
+  ) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevCart.map((item) =>
+        item.id === id && item.color === color && item.size === size
+          ? { ...item, quantity }
+          : item
+      )
     );
   };
 
@@ -135,6 +168,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     setShowCart(true);
   };
 
+  // 當滑鼠離開
   const handleMouseLeave = () => {
     setShowCart(false);
   };

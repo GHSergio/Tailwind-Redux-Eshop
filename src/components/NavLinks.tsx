@@ -5,7 +5,7 @@ import { NavLink as RouterNavLink } from "react-router-dom";
 interface NavLinksProps {
   links: string[];
 }
-
+//目前links是由父層傳入的categories
 const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
   return (
     <Box
@@ -16,6 +16,8 @@ const NavLinks: React.FC<NavLinksProps> = ({ links }) => {
     >
       {links.map((link, index) => (
         <React.Fragment key={link}>
+          {/* 當用戶點擊 RouterNavLink 時，react-router-dom */}
+          {/* 會自動處理這個導航請求並更新 URL */}
           <RouterNavLink
             to={`/category/${link.toLowerCase()}`}
             style={{

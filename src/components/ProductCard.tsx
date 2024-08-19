@@ -4,8 +4,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  CardActions,
-  Button,
+  Tooltip,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -27,9 +26,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   discountPrice,
 }) => {
   const navigate = useNavigate();
+  // onClick image就會前往該商品細節頁面
   const handleClick = () => {
     navigate(`/products/${id}`);
   };
+
   return (
     <Card
       sx={{
@@ -47,9 +48,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onClick={handleClick}
       />
       <CardContent>
-        <Typography variant="h6" component="div" fontSize={"0.8rem"}>
-          {title}
-        </Typography>
+        <Tooltip title={title}>
+          <Typography
+            variant="h6"
+            component="div"
+            fontSize={"0.8rem"}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {title}
+          </Typography>
+        </Tooltip>
         <Typography variant="body2" color="text.secondary">
           {discountPrice ? (
             <>
@@ -61,10 +73,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </Typography>
       </CardContent>
-      {/* <CardActions>
-        <Button size="small">商品細節</Button>
-        <Button size="small">添加到購物車</Button>
-      </CardActions> */}
     </Card>
   );
 };
